@@ -1,35 +1,25 @@
 import Foundation
-import Starscream
+import Alamofire
 
-class WSClient: WebSocketDelegate {
-    
-    var socket: WebSocket!
-    var isConnected = false
-    
-    init() {
-        socket = WebSocket(url: URL(string: "ws://localhost:8888/echo")!)
-        socket.delegate = self
-        socket.connect()
-    }
-    
-    func websocketDidConnect(socket: WebSocketClient) {
-        print("connected")
-        socket.write(string: "⛳️")
-    }
-    
-    func websocketDidDisconnect(socket: WebSocketClient, error: Error?) {
-        print("disconnected")
-    }
-    
-    func websocketDidReceiveMessage(socket: WebSocketClient, text: String) {
-        print("received: \(text)")
-    }
-    
-    func websocketDidReceiveData(socket: WebSocketClient, data: Data) {
-        
+let defaults = UserDefaults.standard
+//defaults.removeObject(forKey: "clientID")
+
+func connect() {
+    if let clientID = defaults.string(forKey: "clientID") {
+        let wsc = WSClient(clientID: clientID)
+        wsc.socket.connect()
+    } else {
+        let newClient = NewClient(hostname: "test-host")
+        AF.request("http://localhost:8888/clients", method: .post, parameters: newClient, encoder: JSONParameterEncoder.default).responseDecodable(of: Client.self) { response in
+            debugPrint(response)
+            if let createdClient = response.value {
+                defaults.set(createdClient.id, forKey: "clientID")
+                connect()
+            }
+        }
     }
 }
 
-let wsc = WSClient()
-print("...")
+connect()
+
 RunLoop.main.run()
