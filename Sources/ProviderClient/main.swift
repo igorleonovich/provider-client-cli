@@ -8,8 +8,8 @@ func connect() {
     
     if let clientID = defaults.string(forKey: "clientID") {
         
-        let wsc = WSClient(clientID: clientID)
-        wsc.socket.connect()
+        let webSocketClient = WebSocketClient(clientID: clientID)
+        webSocketClient.start()
         
     } else {
         
