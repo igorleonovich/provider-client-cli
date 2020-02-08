@@ -2,6 +2,7 @@ import Foundation
 
 struct CLI {
     
+    @discardableResult
     static func runCommand(args : String...) -> (output: [String], error: [String], exitCode: Int32) {
 
         var output : [String] = []
