@@ -14,17 +14,24 @@ func connect() {
         webSocketClient.start()
         
     } else {
-        
-        let hostName = "whoami"
-        let userName = "whoami"
-        let osType = "whoami"
-        let osRelease = "whoami"
+            
+        let hostName = runCommand(args: "hostname").output.first!
+        let userName = runCommand(args: "whoami").output.first!
+        #if os(Linux)
+        runCommand(args: "source", "/etc/os-release")
+        let osType = runCommand(args: "uname").output.first!
+        let osVersion = runCommand(args: "uname", "-r").output.first!
+        #else
+        let osType = runCommand(args: "sw_vers", "-productName").output.first!
+        let osVersion = runCommand(args: "sw_vers", "-productVersion").output.first!
+        #endif
+            
         let state = ClientState.ready.rawValue
         
         let newClient = NewClient(hostName: hostName,
                                   userName: userName,
                                   osType: osType,
-                                  osRelease: osRelease,
+                                  osVersion: osVersion,
                                   state: state)
         
         if let url = URL(string: "http://localhost:8888/clients") {

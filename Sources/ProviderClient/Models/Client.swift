@@ -4,7 +4,7 @@ struct NewClient: Encodable {
     var hostName: String
     var userName: String
     var osType: String
-    var osRelease: String
+    var osVersion: String
     var state: String
 }
 
@@ -13,7 +13,7 @@ struct Client: Decodable {
     var hostName: String
     var userName: String
     var osType: String
-    var osRelease: String
+    var osVersion: String
     var state: String
 }
 
