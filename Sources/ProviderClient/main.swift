@@ -1,4 +1,7 @@
 import Foundation
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 
 let defaults = UserDefaults.standard
 defaults.removeObject(forKey: "clientID")
@@ -12,10 +15,10 @@ func connect() {
         
     } else {
         
-        let hostName = Sysctl.hostName
+        let hostName = "whoami"
         let userName = "whoami"
-        let osType = Sysctl.osType
-        let osRelease = Sysctl.osRelease
+        let osType = "whoami"
+        let osRelease = "whoami"
         let state = ClientState.ready.rawValue
         
         let newClient = NewClient(hostName: hostName,
