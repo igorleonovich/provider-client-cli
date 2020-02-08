@@ -3,27 +3,24 @@ import Foundation
 import FoundationNetworking
 #endif
 
-let defaults = UserDefaults.standard
-defaults.removeObject(forKey: "clientID")
-
 func connect() {
     
-    if let clientID = defaults.string(forKey: "clientID") {
+    if let clientID = Environment.getClientID() {
         
         let webSocketClient = WebSocketClient(clientID: clientID)
         webSocketClient.start()
         
     } else {
             
-        let hostName = runCommand(args: "hostname").output.first!
-        let userName = runCommand(args: "whoami").output.first!
+        let hostName = CLI.runCommand(args: "hostname").output.first!
+        let userName = CLI.runCommand(args: "whoami").output.first!
         #if os(Linux)
-        runCommand(args: "source", "/etc/os-release")
-        let osType = runCommand(args: "uname").output.first!
-        let osVersion = runCommand(args: "uname", "-r").output.first!
+        CLI.runCommand(args: "source", "/etc/os-release")
+        let osType = CLI.runCommand(args: "uname").output.first!
+        let osVersion = CLI.runCommand(args: "uname", "-r").output.first!
         #else
-        let osType = runCommand(args: "sw_vers", "-productName").output.first!
-        let osVersion = runCommand(args: "sw_vers", "-productVersion").output.first!
+        let osType = CLI.runCommand(args: "sw_vers", "-productName").output.first!
+        let osVersion = CLI.runCommand(args: "sw_vers", "-productVersion").output.first!
         #endif
             
         let state = ClientState.ready.rawValue
@@ -49,7 +46,7 @@ func connect() {
                     } else if let data = data {
                         do {
                             let createdClient = try JSONDecoder().decode(Client.self, from: data)
-                            defaults.set(createdClient.id, forKey: "clientID")
+                            Environment.setClientID(createdClient.id)
                             connect()
                         } catch {
                             print(error)
