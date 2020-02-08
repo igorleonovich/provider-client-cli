@@ -22,7 +22,7 @@ class WebSocketClient {
             ws.onText { ws, text in
                 print("server said: \(text)")
             }
-            ws.send("progress")
+            ws.send("running")
             try ws.onClose.wait()
         } catch {
             print(error)
