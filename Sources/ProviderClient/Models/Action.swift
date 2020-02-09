@@ -7,7 +7,7 @@ enum ClientToServerActionType: String {
 
 struct ClientToServerAction: Encodable {
     var type: String
-    var body: Data
+    var data: Data
 }
 
 //struct ServerToClientAction {

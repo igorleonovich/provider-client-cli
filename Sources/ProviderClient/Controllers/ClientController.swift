@@ -51,7 +51,7 @@ class ClientController {
             let localClient = getFreshClient()
             let localClientData = try JSONEncoder().encode(localClient)
             let clientToServerAction = ClientToServerAction(type: ClientToServerActionType.fullClientUpdate.rawValue,
-                                                          body: localClientData)
+                                                          data: localClientData)
             let clientToServerActionData = try JSONEncoder().encode(clientToServerAction)
             completion(clientToServerActionData)
         } catch {
