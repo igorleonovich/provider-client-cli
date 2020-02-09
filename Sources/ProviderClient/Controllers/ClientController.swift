@@ -5,7 +5,18 @@ import FoundationNetworking
 
 class ClientController {
     
-    static func create(with localClient: LocalClient, completion: @escaping (Client?, Error?) -> Void) {
+    func createClient() {
+        
+        let localClient = getFreshClient()
+        create(with: localClient) { createdClient, error in
+            if let createdClient = createdClient {
+                Environment.clientID = createdClient.id
+                connect()
+            }
+        }
+    }
+    
+    func create(with localClient: LocalClient, completion: @escaping (Client?, Error?) -> Void) {
         if let url = URL(string: "http://localhost:8888/clients") {
             do {
                 let data = try JSONEncoder().encode(localClient)
@@ -33,5 +44,45 @@ class ClientController {
             }
         }
     }
-
+    
+    func getFullClientUpdateData(_ completion: @escaping (Data) -> Void) {
+        
+        do {
+            let localClient = getFreshClient()
+            let localClientData = try JSONEncoder().encode(localClient)
+            let clientToServerAction = ClientToServerAction(type: ClientToServerActionType.fullClientUpdate.rawValue,
+                                                          body: localClientData)
+            let clientToServerActionData = try JSONEncoder().encode(clientToServerAction)
+            completion(clientToServerActionData)
+        } catch {
+            print(error)
+        }
+    }
+    
+    func getFreshClient() -> LocalClient {
+        
+        let hostName = CLI.runCommand(args: "hostname").output.first!
+        let userName = CLI.runCommand(args: "whoami").output.first!
+        let kernelType = CLI.runCommand(args: "uname").output.first!
+        let kernelVersion = CLI.runCommand(args: "uname", "-r").output.first!
+        #if os(Linux)
+        CLI.runCommand(args: "source", "/etc/os-release")
+        let osType = CLI.runCommand(args: "bash", "Scripts/linuxOSType.bash").output.first!
+        let osVersion = CLI.runCommand(args: "bash", "Scripts/linuxOSVersion.bash").output.first!
+        #else
+        let osType = CLI.runCommand(args: "sw_vers", "-productName").output.first!
+        let osVersion = CLI.runCommand(args: "sw_vers", "-productVersion").output.first!
+        #endif
+            
+        let state = ClientState.ready.rawValue
+        
+        let localClient = LocalClient(hostName: hostName,
+                                  userName: userName,
+                                  osType: osType,
+                                  osVersion: osVersion,
+                                  kernelType: kernelType,
+                                  kernelVersion: kernelVersion,
+                                  state: state)
+        return localClient
+    }
 }

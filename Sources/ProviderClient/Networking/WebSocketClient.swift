@@ -10,20 +10,21 @@ class WebSocketClient {
         self.clientID = clientID
     }
     
-    func start() {
+    func start(_ completion: @escaping () -> Void) {
         
         do {
-            let ws = try HTTPClient.webSocket(hostname: "localhost",
+            webSocket = try HTTPClient.webSocket(hostname: "localhost",
                 port: 8888,
                 path: "/connect/\(clientID)",
-                on: MultiThreadedEventLoopGroup.init(numberOfThreads: 1))
-                .wait()
-
-            ws.onText { ws, text in
+                on: MultiThreadedEventLoopGroup.init(numberOfThreads: 1)).wait()
+            
+            self.webSocket.onText { webSocket, text in
                 // process server messages (config deployment)
             }
             
-            try ws.onClose.wait()
+//            try self.webSocket.onClose.wait()
+            
+            completion()
             
         } catch {
             print(error)
