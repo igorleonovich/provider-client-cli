@@ -20,10 +20,11 @@ class WebSocketClient {
                 .wait()
 
             ws.onText { ws, text in
-                print("server said: \(text)")
+                // process server messages (config deployment)
             }
-            ws.send("running")
+            
             try ws.onClose.wait()
+            
         } catch {
             print(error)
         }

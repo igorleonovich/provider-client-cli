@@ -9,57 +9,17 @@ func connect() {
         
         let webSocketClient = WebSocketClient(clientID: clientID)
         webSocketClient.start()
+        let localClient = LocalClient.fresh()
+        // send updated client via ws
+        // ws.send("running")
         
     } else {
-            
-        let hostName = CLI.runCommand(args: "hostname").output.first!
-        let userName = CLI.runCommand(args: "whoami").output.first!
-        let kernelType = CLI.runCommand(args: "uname").output.first!
-        let kernelVersion = CLI.runCommand(args: "uname", "-r").output.first!
-        #if os(Linux)
-        CLI.runCommand(args: "source", "/etc/os-release")
-        let osType = CLI.runCommand(args: "bash", "Scripts/linuxOSType.bash").output.first!
-        let osVersion = CLI.runCommand(args: "bash", "Scripts/linuxOSVersion.bash").output.first!
-        #else
-        let osType = CLI.runCommand(args: "sw_vers", "-productName").output.first!
-        let osVersion = CLI.runCommand(args: "sw_vers", "-productVersion").output.first!
-        #endif
-            
-        let state = ClientState.ready.rawValue
         
-        let newClient = NewClient(hostName: hostName,
-                                  userName: userName,
-                                  osType: osType,
-                                  osVersion: osVersion,
-                                  kernelType: kernelType,
-                                  kernelVersion: kernelVersion,
-                                  state: state)
-        
-        if let url = URL(string: "http://localhost:8888/clients") {
-            do {
-                let data = try JSONEncoder().encode(newClient)
-                var request = URLRequest(url: url)
-                request.httpMethod = "POST"
-                request.httpBody = data
-                request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-                request.addValue("application/json", forHTTPHeaderField: "Accept")
-
-                let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
-                    if let error = error {
-                        print(error)
-                    } else if let data = data {
-                        do {
-                            let createdClient = try JSONDecoder().decode(Client.self, from: data)
-                            Environment.clientID = createdClient.id
-                            connect()
-                        } catch {
-                            print(error)
-                        }
-                    }
-                }
-                task.resume()
-            } catch {
-                print(error)
+        let localClient = LocalClient.fresh()
+        Client.create(with: localClient) { createdClient, error in
+            if let createdClient = createdClient {
+                Environment.clientID = createdClient.id
+                connect()
             }
         }
     }
