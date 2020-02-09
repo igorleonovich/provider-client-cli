@@ -2,25 +2,24 @@ import Foundation
 
 struct Environment {
     
-    private static let clientIDKey = "PROVIDER_CLIENT_ID"
+    private static let homePath = ProcessInfo.processInfo.environment["HOME"]
+    private static let filePath = "\(homePath!)/.provider_client_id"
     
-    static func getClientID() -> String? {
-        getVariable(name: clientIDKey)
-    }
-    
-    static func setClientID(_ newValue: String) {
-        setVariable(name: clientIDKey, value: newValue, overwrite: true)
-    }
-  
-    private static func setVariable(name: String, value: String, overwrite: Bool) {
-        setenv(name, value, overwrite ? 1 : 0)
-    }
-    
-    private static func getVariable(name: String) -> String? {
-        let processInfo = ProcessInfo.processInfo
-        guard let value = processInfo.environment[name] else {
-            return nil
+    static var clientID: String? {
+        get {
+            let providerClientID = CLI.runCommand(args: "cat", filePath).output.first!
+            return providerClientID.isEmpty ? nil : providerClientID
         }
-        return value
+        set {
+            if let newValue = newValue {
+                do {
+                    try newValue.write(toFile: filePath, atomically: true, encoding: .utf8)
+                } catch {
+                    print(error)
+                }
+            } else {
+                CLI.runCommand(args: "rm", filePath)
+            }
+        }
     }
 }

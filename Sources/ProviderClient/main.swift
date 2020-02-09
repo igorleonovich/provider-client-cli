@@ -5,7 +5,7 @@ import FoundationNetworking
 
 func connect() {
     
-    if let clientID = Environment.getClientID() {
+    if let clientID = Environment.clientID {
         
         let webSocketClient = WebSocketClient(clientID: clientID)
         webSocketClient.start()
@@ -46,7 +46,7 @@ func connect() {
                     } else if let data = data {
                         do {
                             let createdClient = try JSONDecoder().decode(Client.self, from: data)
-                            Environment.setClientID(createdClient.id)
+                            Environment.clientID = createdClient.id
                             connect()
                         } catch {
                             print(error)
