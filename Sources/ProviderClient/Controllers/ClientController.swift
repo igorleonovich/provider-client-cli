@@ -5,13 +5,15 @@ import FoundationNetworking
 
 class ClientController {
     
+    var state: ClientState = .ready
+    
     func createClient() {
         
         let localClient = getFreshClient()
         create(with: localClient) { createdClient, error in
             if let createdClient = createdClient {
                 Environment.clientID = createdClient.id
-                connect()
+                core.connect()
             }
         }
     }
