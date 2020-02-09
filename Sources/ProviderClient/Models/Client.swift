@@ -5,6 +5,8 @@ struct NewClient: Encodable {
     var userName: String
     var osType: String
     var osVersion: String
+    var kernelType: String
+    var kernelVersion: String
     var state: String
 }
 
@@ -14,6 +16,8 @@ struct Client: Decodable {
     var userName: String
     var osType: String
     var osVersion: String
+    var kernelType: String
+    var kernelVersion: String
     var state: String
 }
 
