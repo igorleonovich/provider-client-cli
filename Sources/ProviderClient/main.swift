@@ -1,7 +1,4 @@
 import Foundation
-#if canImport(FoundationNetworking)
-import FoundationNetworking
-#endif
 
 func connect() {
     
@@ -9,14 +6,15 @@ func connect() {
         
         let webSocketClient = WebSocketClient(clientID: clientID)
         webSocketClient.start()
-        let localClient = LocalClient.fresh()
+        
+        // let localClient = LocalClient.fresh()
         // send updated client via ws
         // ws.send("running")
         
     } else {
         
         let localClient = LocalClient.fresh()
-        Client.create(with: localClient) { createdClient, error in
+        ClientController.create(with: localClient) { createdClient, error in
             if let createdClient = createdClient {
                 Environment.clientID = createdClient.id
                 connect()
