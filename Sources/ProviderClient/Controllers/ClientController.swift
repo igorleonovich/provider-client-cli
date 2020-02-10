@@ -6,15 +6,20 @@ import ProviderSDK
 
 class ClientController {
     
+    weak var core: Core?
     var state: ClientState = .ready
     
-    func createClient() {
+    init(core: Core) {
+        self.core = core
+    }
+    
+    func createClient(_ completion: @escaping () -> Void) {
         
         let localClient = getFreshClient()
         create(with: localClient) { createdClient, error in
             if let createdClient = createdClient {
                 Environment.clientID = createdClient.id
-                core.connect()
+                completion()
             }
         }
     }

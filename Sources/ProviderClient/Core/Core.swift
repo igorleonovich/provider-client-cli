@@ -1,51 +1,40 @@
 import Foundation
-import ProviderSDK
 
 class Core {
     
-    let clientController = ClientController()
-    var webSocketClient: WebSocketClient?
+    var clientController: ClientController!
+    var stateController: StateController!
+    var webSocketController: WebSocketController?
     
-    func connect() {
+    func setup() {
+        clientController = ClientController(core: self)
+        stateController = StateController(core: self)
+    }
+    
+    func connect(_ completion: (() -> Void)?) {
         
         if let clientID = Environment.clientID {
-            webSocketClient = WebSocketClient(clientID: clientID)
-            webSocketClient?.start() { [weak self] in
-                self?.clientController.getFullClientUpdateData() { fullClientUpdateData in
-                    self?.webSocketClient?.webSocket.send(fullClientUpdateData)
-                    self?.startStateBroadcasting()
-                }
+            webSocketController = WebSocketController(core: self, clientID: clientID)
+            webSocketController!.start() {
+                completion?()
             }
         } else {
-            core.clientController.createClient()
+            createClient {
+               self.connect(nil)
+            }
         }
     }
     
-    func startStateBroadcasting() {
-        
-        Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
-            
-            let randomNumber = Int.random(in: 1...3)
-            switch randomNumber {
-            case 1:
-                self.clientController.state = .ready
-            case 2:
-                self.clientController.state = .progress
-            case 3:
-                self.clientController.state = .running
-            default:
-                self.clientController.state = .unknown
-            }
-            
-            if let stateData = self.clientController.state.rawValue.data(using: .utf8) {
-                let clientToServerAction = ClientToServerAction(type: ClientToServerActionType.stateUpdate.rawValue, data: stateData)
-                do {
-                    let clientToServerActionData = try JSONEncoder().encode(clientToServerAction)
-                    self.webSocketClient?.webSocket.send(clientToServerActionData)
-                } catch {
-                    print(error)
-                }
-            }
+    func createClient(_ completion: @escaping () -> Void) {
+        core.clientController.createClient {
+            completion()
+        }
+    }
+    
+    func updateClient(_ completion: @escaping () -> Void) {
+        core.clientController.getFullClientUpdateData() { fullClientUpdateData in
+            core.webSocketController?.webSocket.send(fullClientUpdateData)
+            completion()
         }
     }
 }

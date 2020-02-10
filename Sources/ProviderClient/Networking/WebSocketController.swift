@@ -1,12 +1,14 @@
 import Foundation
 import WebSocket
 
-class WebSocketClient {
+class WebSocketController {
     
-    var webSocket: WebSocket!
+    weak var core: Core?
     var clientID: String
+    var webSocket: WebSocket!
     
-    init(clientID: String) {
+    init(core: Core, clientID: String) {
+        self.core = core
         self.clientID = clientID
     }
     
@@ -18,7 +20,7 @@ class WebSocketClient {
                 path: "/connect/\(clientID)",
                 on: MultiThreadedEventLoopGroup.init(numberOfThreads: 1)).wait()
             
-            self.webSocket.onText { webSocket, text in
+            webSocket.onText { webSocket, text in
                 // process server messages (config deployment)
             }
             
