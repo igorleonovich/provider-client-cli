@@ -29,6 +29,15 @@
         }
       },
       {
+        "package": "ProviderSDK",
+        "repositoryURL": "/Volumes/PRODUCTCOMPANYX/ProductCompanyX/Projects/Provider/ProviderSDK",
+        "state": {
+          "branch": null,
+          "revision": "c6b95f34764aa03b22e4db25b8cda56e5501a272",
+          "version": "1.0.4"
+        }
+      },
+      {
         "package": "swift-nio",
         "repositoryURL": "https://github.com/apple/swift-nio.git",
         "state": {
