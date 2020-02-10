@@ -23,18 +23,19 @@ class Core {
     func startStateBroadcasting() {
         
         Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
-            let randomNumber = Int.random(in: 1...3)
-            
-            switch randomNumber {
-            case 1:
-                self.clientController.state = .ready
-            case 2:
-                self.clientController.state = .progress
-            case 3:
-                self.clientController.state = .running
-            default:
-                self.clientController.state = .unknown
-            }
+//            let randomNumber = Int.random(in: 1...3)
+//
+//
+//            switch randomNumber {
+//            case 1:
+//                self.clientController.state = .ready
+//            case 2:
+//                self.clientController.state = .progress
+//            case 3:
+//                self.clientController.state = .running
+//            default:
+//                self.clientController.state = .unknown
+//            }
             
             if let stateData = self.clientController.state.rawValue.data(using: .utf8) {
                 let clientToServerAction = ClientToServerAction(type: ClientToServerActionType.stateUpdate.rawValue, data: stateData)
