@@ -21,7 +21,11 @@ class WebSocketController {
                 on: MultiThreadedEventLoopGroup.init(numberOfThreads: 1)).wait()
             
             webSocket.onText { webSocket, text in
-                // process server messages (config deployment)
+                print(text)
+            }
+            
+            webSocket.onBinary { webSocket, data in
+                print(data)
             }
             
 //            try self.webSocket.onClose.wait()
