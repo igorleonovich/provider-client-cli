@@ -39,7 +39,7 @@ class ClientController {
     }
     
     func create(with localClient: LocalClient, completion: @escaping (Client?, Error?) -> Void) {
-        if let url = URL(string: "http://localhost:8888/clients") {
+        if let url = URL(string: "http://localhost:8080/clients") {
             do {
                 let data = try JSONEncoder().encode(localClient)
                 var request = URLRequest(url: url)

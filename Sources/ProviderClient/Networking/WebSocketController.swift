@@ -16,7 +16,7 @@ class WebSocketController {
         
         do {
             webSocket = try HTTPClient.webSocket(hostname: "localhost",
-                port: 8888,
+                port: 8080,
                 path: "/connect/\(clientID)",
                 on: MultiThreadedEventLoopGroup.init(numberOfThreads: 1)).wait()
             
