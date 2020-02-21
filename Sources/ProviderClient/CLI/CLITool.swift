@@ -8,6 +8,7 @@ public final class CLITool {
         let hostArgument = parser.add(option: "--host", shortName: "-h", kind: String.self, usage: "Use custom host name")
         let portArgument = parser.add(option: "--port", shortName: "-p", kind: Int.self, usage: "Use custom port")
         let versionOption = parser.add(option: "--version", kind: Bool.self)
+        let verboseOption = parser.add(option: "--verbose", kind: Bool.self, usage: "Show more debugging information")
         
         do {
             let result = try parser.parse(Array(CommandLine.arguments.dropFirst()))
