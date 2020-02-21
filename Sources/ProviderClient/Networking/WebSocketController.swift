@@ -15,8 +15,8 @@ class WebSocketController {
     func start(_ completion: @escaping () -> Void) {
         
         do {
-            webSocket = try HTTPClient.webSocket(hostname: "localhost",
-                port: 8080,
+            webSocket = try HTTPClient.webSocket(hostname: Constants.host,
+                                                 port: Constants.port,
                 path: "/connect/\(clientID)",
                 on: MultiThreadedEventLoopGroup.init(numberOfThreads: 1)).wait()
             
