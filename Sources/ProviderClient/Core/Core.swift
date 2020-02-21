@@ -11,16 +11,16 @@ class Core {
         stateController = StateController(core: self)
     }
     
-    func connect(_ completion: (() -> Void)?) {
+    func connect(_ completion: @escaping () -> Void) {
         
         if let clientID = Environment.clientID {
             webSocketController = WebSocketController(core: self, clientID: clientID)
             webSocketController!.start {
-                completion?()
+                completion()
             }
         } else {
             createClient {
-               self.connect(nil)
+               self.connect(completion)
             }
         }
     }

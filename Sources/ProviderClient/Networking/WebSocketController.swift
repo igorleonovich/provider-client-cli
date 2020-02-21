@@ -16,7 +16,7 @@ class WebSocketController {
         
         do {
             webSocket = try HTTPClient.webSocket(hostname: Constants.host,
-                                                 port: Constants.port,
+                                                 port: Constants.wsPort,
                 path: "/connect/\(clientID)",
                 on: MultiThreadedEventLoopGroup.init(numberOfThreads: 1)).wait()
             

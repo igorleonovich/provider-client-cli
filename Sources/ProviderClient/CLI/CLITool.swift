@@ -6,7 +6,8 @@ public final class CLITool {
     func run() {
         let parser = ArgumentParser(commandName: "pc", usage: "pc -h hostname -p port", overview: "Provider Client")
         let hostArgument = parser.add(option: "--host", shortName: "-h", kind: String.self, usage: "Use custom host name")
-        let portArgument = parser.add(option: "--port", shortName: "-p", kind: Int.self, usage: "Use custom port")
+        let httpPortArgument = parser.add(option: "--httpport", shortName: "-hp", kind: Int.self, usage: "Use custom HTTP port")
+        let wsPortArgument = parser.add(option: "--wsport", shortName: "-wp", kind: Int.self, usage: "Use custom WebSockets port")
         let resetOption = parser.add(option: "--reset", kind: Bool.self)
         let versionOption = parser.add(option: "--version", kind: Bool.self)
         let verboseOption = parser.add(option: "--verbose", kind: Bool.self, usage: "Show more debugging information")
@@ -31,8 +32,12 @@ public final class CLITool {
                 Constants.host = host
             }
             
-            if let port = result.get(portArgument) {
-                Constants.port = port
+            if let httpPort = result.get(httpPortArgument) {
+                Constants.httpPort = httpPort
+            }
+            
+            if let wsPort = result.get(wsPortArgument) {
+                Constants.wsPort = wsPort
             }
         } catch {
             print(error)
