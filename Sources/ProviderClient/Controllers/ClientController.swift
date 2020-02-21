@@ -32,7 +32,7 @@ class ClientController {
             if let createdClient = createdClient {
                 Environment.clientID = createdClient.id
                 completion()
-            } else {
+            } else if let error = error {
                 print(error)
             }
         }

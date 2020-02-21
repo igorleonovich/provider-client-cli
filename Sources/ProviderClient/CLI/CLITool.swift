@@ -7,14 +7,24 @@ public final class CLITool {
         let parser = ArgumentParser(commandName: "pc", usage: "pc -h hostname -p port", overview: "Provider Client")
         let hostArgument = parser.add(option: "--host", shortName: "-h", kind: String.self, usage: "Use custom host name")
         let portArgument = parser.add(option: "--port", shortName: "-p", kind: Int.self, usage: "Use custom port")
+        let resetOption = parser.add(option: "--reset", kind: Bool.self)
         let versionOption = parser.add(option: "--version", kind: Bool.self)
         let verboseOption = parser.add(option: "--verbose", kind: Bool.self, usage: "Show more debugging information")
         
         do {
             let result = try parser.parse(Array(CommandLine.arguments.dropFirst()))
-            if let version = result.get(versionOption) {
+            
+            if result.get(resetOption) != nil {
+                Environment.clientID = nil
+            }
+            
+            if result.get(versionOption) != nil {
                 print("ProviderClient 0.1.0")
                 return
+            }
+            
+            if result.get(verboseOption) != nil {
+                
             }
             
             if let host = result.get(hostArgument) {
