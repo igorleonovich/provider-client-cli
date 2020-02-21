@@ -15,7 +15,7 @@ class Core {
         
         if let clientID = Environment.clientID {
             webSocketController = WebSocketController(core: self, clientID: clientID)
-            webSocketController!.start() {
+            webSocketController!.start {
                 completion?()
             }
         } else {
@@ -31,7 +31,7 @@ class Core {
         }
     }
     
-    func updateClient(_ completion: @escaping () -> Void) {
+    func fullClientUpdate(_ completion: @escaping () -> Void) {
         core.clientController.getFullClientUpdateData() { fullClientUpdateData in
             core.webSocketController?.webSocket.send(fullClientUpdateData)
             completion()

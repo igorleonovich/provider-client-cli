@@ -7,7 +7,19 @@ import ProviderSDK
 class ClientController {
     
     weak var core: Core?
-    var state: ClientState = .ready
+    
+    var previousLocalClient: LocalClient?
+    private var currentLocalClientValue: LocalClient?
+    var currentLocalClient: LocalClient? {
+        set {
+            previousLocalClient = currentLocalClientValue
+            currentLocalClientValue = newValue
+        }
+        get {
+            return currentLocalClientValue
+        }
+    }
+//    var clientID: UUID?
     
     init(core: Core) {
         self.core = core
@@ -15,11 +27,13 @@ class ClientController {
     
     func createClient(_ completion: @escaping () -> Void) {
         
-        let localClient = getFreshClient()
+        let localClient = getFullFreshClient()
         create(with: localClient) { createdClient, error in
             if let createdClient = createdClient {
                 Environment.clientID = createdClient.id
                 completion()
+            } else {
+                print(error)
             }
         }
     }
@@ -56,7 +70,7 @@ class ClientController {
     func getFullClientUpdateData(_ completion: @escaping (Data) -> Void) {
         
         do {
-            let localClient = getFreshClient()
+            let localClient = getFullFreshClient()
             let localClientData = try JSONEncoder().encode(localClient)
             let clientToServerAction = ClientToServerAction(type: ClientToServerActionType.fullClientUpdate.rawValue,
                                                           data: localClientData)
@@ -67,7 +81,7 @@ class ClientController {
         }
     }
     
-    func getFreshClient() -> LocalClient {
+    func getFullFreshClient() -> LocalClient {
         
         let hostName = CLI.runCommand(args: "hostname").output.first!
         let userName = CLI.runCommand(args: "whoami").output.first!
@@ -91,6 +105,8 @@ class ClientController {
                                   kernelType: kernelType,
                                   kernelVersion: kernelVersion,
                                   state: state)
+        self.currentLocalClientValue = localClient
+        
         return localClient
     }
 }

@@ -24,8 +24,8 @@
         "repositoryURL": "https://github.com/vapor/http.git",
         "state": {
           "branch": null,
-          "revision": "3808ed0401379b6e9f4a053f03090ea9d658caa9",
-          "version": "3.2.1"
+          "revision": "fba1329cd430e2f9a3f995b317b04f268d8b2978",
+          "version": "3.3.2"
         }
       },
       {
@@ -33,8 +33,8 @@
         "repositoryURL": "/Volumes/New/ProductCompanyX/Projects/Provider/ProviderSDK",
         "state": {
           "branch": null,
-          "revision": "c6b95f34764aa03b22e4db25b8cda56e5501a272",
-          "version": "1.0.4"
+          "revision": "a7c1226fbfcd16d61148dacbe1daf1ddd31f6186",
+          "version": "1.0.6"
         }
       },
       {
@@ -42,8 +42,8 @@
         "repositoryURL": "https://github.com/apple/swift-nio.git",
         "state": {
           "branch": null,
-          "revision": "ba7970fe396e8198b84c6c1b44b38a1d4e2eb6bd",
-          "version": "1.14.1"
+          "revision": "8da5c5a4e6c5084c296b9f39dc54f00be146e0fa",
+          "version": "1.14.2"
         }
       },
       {

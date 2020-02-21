@@ -9,31 +9,50 @@ class StateController {
         self.core = core
     }
     
-    func startStateBroadcasting() {
+    func startStateUpdating() {
         
         Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] timer in
             
             guard let `self` = self, let core = self.core else { return }
             
+            
+            // Vary state
+            var newState = ClientState.ready
             let randomNumber = Int.random(in: 1...3)
             switch randomNumber {
             case 1:
-                core.clientController.state = .ready
+                newState = ClientState.ready
             case 2:
-                core.clientController.state = .progress
+                newState = ClientState.progress
             case 3:
-                core.clientController.state = .running
+                newState = ClientState.running
             default:
-                core.clientController.state = .unknown
+                newState = ClientState.unknown
             }
             
-            if let stateData = core.clientController.state.rawValue.data(using: .utf8) {
-                let clientToServerAction = ClientToServerAction(type: ClientToServerActionType.stateUpdate.rawValue, data: stateData)
-                do {
-                    let clientToServerActionData = try JSONEncoder().encode(clientToServerAction)
-                    core.webSocketController?.webSocket.send(clientToServerActionData)
-                } catch {
-                    print(error)
+            if let currentLocalClient = core.clientController.currentLocalClient {
+                var newLocalClient = currentLocalClient
+                newLocalClient.state = newState.rawValue
+                core.clientController.currentLocalClient = newLocalClient
+            }
+            
+            // Check updates
+            
+            if let previousLocalClient = core.clientController.previousLocalClient,
+                let currentLocalClient = core.clientController.currentLocalClient {
+                
+                if currentLocalClient.state != previousLocalClient.state {
+                    
+                    // Send updated object
+                    do {
+                        let updatedClient = LocalClient(state: currentLocalClient.state!)
+                        let updatedClientData = try JSONEncoder().encode(updatedClient)
+                        let clientToServerAction = ClientToServerAction(type: ClientToServerActionType.partialClientUpdate.rawValue, data: updatedClientData)
+                        let clientToServerActionData = try JSONEncoder().encode(clientToServerAction)
+                        core.webSocketController?.webSocket.send(clientToServerActionData)
+                    } catch {
+                        print(error)
+                    }
                 }
             }
         }
