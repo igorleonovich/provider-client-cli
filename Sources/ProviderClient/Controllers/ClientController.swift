@@ -19,7 +19,6 @@ class ClientController {
             return currentLocalClientValue
         }
     }
-//    var clientID: UUID?
     
     init(core: Core) {
         self.core = core
@@ -95,8 +94,10 @@ class ClientController {
         let osType = CLI.runCommand(args: "sw_vers", "-productName").output.first!
         let osVersion = CLI.runCommand(args: "sw_vers", "-productVersion").output.first!
         #endif
-            
-        let state = ClientState.ready.rawValue
+        
+        let cpuUsage = ClientInfo.cpuUsage
+        let freeRAM = ClientInfo.freeRAM
+        let state = ClientState.unknown.rawValue
         
         let localClient = LocalClient(hostName: hostName,
                                   userName: userName,
@@ -104,7 +105,9 @@ class ClientController {
                                   osVersion: osVersion,
                                   kernelType: kernelType,
                                   kernelVersion: kernelVersion,
-                                  state: state)
+                                  state: state,
+                                  cpuUsage: cpuUsage,
+                                  freeRAM: freeRAM)
         self.currentLocalClientValue = localClient
         
         return localClient
