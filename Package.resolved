@@ -29,6 +29,15 @@
         }
       },
       {
+        "package": "ProviderSDK",
+        "repositoryURL": "git@github.com:igorleonovich/ProviderSDK.git",
+        "state": {
+          "branch": null,
+          "revision": "a7c1226fbfcd16d61148dacbe1daf1ddd31f6186",
+          "version": "1.0.6"
+        }
+      },
+      {
         "package": "llbuild",
         "repositoryURL": "https://github.com/apple/swift-llbuild.git",
         "state": {
