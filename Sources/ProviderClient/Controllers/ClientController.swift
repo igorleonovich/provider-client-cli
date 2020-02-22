@@ -9,14 +9,11 @@ class ClientController {
     weak var core: Core?
     
     var previousLocalClient: LocalClient?
-    private var currentLocalClientValue: LocalClient?
     var currentLocalClient: LocalClient? {
-        set {
-            previousLocalClient = currentLocalClientValue
-            currentLocalClientValue = newValue
-        }
-        get {
-            return currentLocalClientValue
+        didSet {
+            if previousLocalClient == nil {
+                previousLocalClient = currentLocalClient
+            }
         }
     }
     
@@ -108,7 +105,7 @@ class ClientController {
                                   state: state,
                                   cpuUsage: cpuUsage,
                                   freeRAM: freeRAM)
-        self.currentLocalClientValue = localClient
+        self.currentLocalClient = localClient
         
         return localClient
     }

@@ -14,14 +14,7 @@ class StateController {
         DispatchQueue.main.async {
             Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] timer in
                 
-                guard let `self` = self, let core = self.core,
-                    let currentLocalClient = core.clientController.currentLocalClient else { return }
-                
-                if core.clientController.previousLocalClient == nil {
-                    core.clientController.previousLocalClient = currentLocalClient
-                }
-                
-                guard let previousLocalClient = core.clientController.previousLocalClient else { return }
+                guard let `self` = self, let core = self.core else { return }
                 
                 core.clientController.currentLocalClient?.cpuUsage = ClientInfo.cpuUsage
                 core.clientController.currentLocalClient?.freeRAM = ClientInfo.freeRAM
@@ -31,18 +24,20 @@ class StateController {
                 var newLocalClient = LocalClient()
                 var shouldUpdate = false
                 
-                if currentLocalClient.state != previousLocalClient.state {
-                    newLocalClient.state = currentLocalClient.state
+                if core.clientController.currentLocalClient!.state != core.clientController.previousLocalClient!.state {
+                    newLocalClient.state = core.clientController.currentLocalClient!.state
                     shouldUpdate = true
                 }
-                if currentLocalClient.cpuUsage != previousLocalClient.cpuUsage {
-                    newLocalClient.cpuUsage = currentLocalClient.cpuUsage
+                if core.clientController.currentLocalClient!.cpuUsage != core.clientController.previousLocalClient!.cpuUsage {
+                    newLocalClient.cpuUsage = core.clientController.currentLocalClient!.cpuUsage
                     shouldUpdate = true
                 }
-                if currentLocalClient.freeRAM != previousLocalClient.freeRAM {
-                    newLocalClient.freeRAM = currentLocalClient.freeRAM
+                if core.clientController.currentLocalClient!.freeRAM != core.clientController.previousLocalClient!.freeRAM {
+                    newLocalClient.freeRAM = core.clientController.currentLocalClient!.freeRAM
                     shouldUpdate = true
                 }
+                
+                core.clientController.previousLocalClient = core.clientController.currentLocalClient
                 
                 // Send updated object
                 
