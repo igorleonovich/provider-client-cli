@@ -14,25 +14,28 @@ class StatsController {
         DispatchQueue.main.async {
             Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] timer in
                 
-                updateStats()
+                guard let `self` = self else { return }
                 
-                guard let `self` = self, let core = self.core,
-                    let currentLocalClient = core.clientController.currentLocalClient else { return }
+                self.updateStats()
+                
+                guard let core = self.core,
+                    let currentLocalClient = core.clientController.currentLocalClient,
+                    let previousLocalClient = core.clientController.previousLocalClient else { return }
                 
                 // Check updates
                 
-                var newLocalClient = LocalClient()
+                var newLocalClient = ProviderLocalClient()
                 var shouldUpdate = false
                 
-                if currentLocalClient.state != core.clientController.previousLocalClient!.state {
+                if currentLocalClient.state != previousLocalClient.state {
                     newLocalClient.state = currentLocalClient.state
                     shouldUpdate = true
                 }
-                if currentLocalClient.cpuUsage != core.clientController.previousLocalClient!.cpuUsage {
+                if currentLocalClient.cpuUsage != previousLocalClient.cpuUsage {
                     newLocalClient.cpuUsage = currentLocalClient.cpuUsage
                     shouldUpdate = true
                 }
-                if currentLocalClient.freeRAM != core.clientController.previousLocalClient!.freeRAM {
+                if currentLocalClient.freeRAM != previousLocalClient.freeRAM {
                     newLocalClient.freeRAM = currentLocalClient.freeRAM
                     shouldUpdate = true
                 }
@@ -56,9 +59,9 @@ class StatsController {
     }
     
     private func updateStats() {
-        guard let `self` = self, let core = self.core else { return }
+        guard let core = self.core else { return }
         core.clientController.currentLocalClient?.cpuUsage = ClientInfo.cpuUsage
         core.clientController.currentLocalClient?.freeRAM = ClientInfo.freeRAM
-        core.clientController.currentLocalClient?.state = ClientState.available.rawValue
+        core.clientController.currentLocalClient?.state = ProviderClientState.available.rawValue
     }
 }

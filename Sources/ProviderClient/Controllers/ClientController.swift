@@ -8,8 +8,8 @@ class ClientController {
     
     weak var core: Core?
     
-    var previousLocalClient: LocalClient?
-    var currentLocalClient: LocalClient? {
+    var previousLocalClient: ProviderLocalClient?
+    var currentLocalClient: ProviderLocalClient? {
         didSet {
             if previousLocalClient == nil {
                 previousLocalClient = currentLocalClient
@@ -34,7 +34,7 @@ class ClientController {
         }
     }
     
-    func create(with localClient: LocalClient, completion: @escaping (Client?, Error?) -> Void) {
+    func create(with localClient: ProviderLocalClient, completion: @escaping (ProviderClient?, Error?) -> Void) {
         if let url = URL(string: "\(Constants.baseURL)/clients") {
             do {
                 let data = try JSONEncoder().encode(localClient)
@@ -49,7 +49,7 @@ class ClientController {
                         print(error)
                     } else if let data = data {
                         do {
-                            let createdClient = try JSONDecoder().decode(Client.self, from: data)
+                            let createdClient = try JSONDecoder().decode(ProviderClient.self, from: data)
                             completion(createdClient, nil)
                         } catch {
                             completion(nil, error)
@@ -77,7 +77,7 @@ class ClientController {
         }
     }
     
-    func getFullFreshClient() -> LocalClient {
+    func getFullFreshClient() -> ProviderLocalClient {
         
         let hostName = CLI.runCommand(args: "hostname").output.first!
         let userName = CLI.runCommand(args: "whoami").output.first!
@@ -94,9 +94,9 @@ class ClientController {
         
         let cpuUsage = ClientInfo.cpuUsage
         let freeRAM = ClientInfo.freeRAM
-        let state = ClientState.unknown.rawValue
+        let state = ProviderClientState.unknown.rawValue
         
-        let localClient = LocalClient(hostName: hostName,
+        let localClient = ProviderLocalClient(hostName: hostName,
                                   userName: userName,
                                   osType: osType,
                                   osVersion: osVersion,

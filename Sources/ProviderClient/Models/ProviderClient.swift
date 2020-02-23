@@ -1,6 +1,6 @@
 import Foundation
 
-struct Client: Decodable {
+struct ProviderClient: Decodable {
     var id: String
     var hostName: String?
     var userName: String?
@@ -10,4 +10,3 @@ struct Client: Decodable {
     var kernelVersion: String?
     var state: String?
 }
-
