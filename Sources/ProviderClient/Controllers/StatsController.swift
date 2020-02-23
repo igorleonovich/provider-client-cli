@@ -1,7 +1,7 @@
 import Foundation
 import ProviderSDK
 
-class StateController {
+class StatsController {
     
     weak var core: Core?
     
@@ -9,7 +9,7 @@ class StateController {
         self.core = core
     }
     
-    func startStateUpdating() {
+    func startStatsUpdating() {
         
         DispatchQueue.main.async {
             Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] timer in
@@ -19,21 +19,23 @@ class StateController {
                 core.clientController.currentLocalClient?.cpuUsage = ClientInfo.cpuUsage
                 core.clientController.currentLocalClient?.freeRAM = ClientInfo.freeRAM
                 
+                guard let currentLocalClient = core.clientController.currentLocalClient else { return }
+                
                 // Check updates
                 
                 var newLocalClient = LocalClient()
                 var shouldUpdate = false
                 
-                if core.clientController.currentLocalClient!.state != core.clientController.previousLocalClient!.state {
-                    newLocalClient.state = core.clientController.currentLocalClient!.state
+                if currentLocalClient.state != core.clientController.previousLocalClient!.state {
+                    newLocalClient.state = currentLocalClient.state
                     shouldUpdate = true
                 }
-                if core.clientController.currentLocalClient!.cpuUsage != core.clientController.previousLocalClient!.cpuUsage {
-                    newLocalClient.cpuUsage = core.clientController.currentLocalClient!.cpuUsage
+                if currentLocalClient.cpuUsage != core.clientController.previousLocalClient!.cpuUsage {
+                    newLocalClient.cpuUsage = currentLocalClient.cpuUsage
                     shouldUpdate = true
                 }
-                if core.clientController.currentLocalClient!.freeRAM != core.clientController.previousLocalClient!.freeRAM {
-                    newLocalClient.freeRAM = core.clientController.currentLocalClient!.freeRAM
+                if currentLocalClient.freeRAM != core.clientController.previousLocalClient!.freeRAM {
+                    newLocalClient.freeRAM = currentLocalClient.freeRAM
                     shouldUpdate = true
                 }
                 

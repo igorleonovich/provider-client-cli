@@ -13,7 +13,15 @@ struct ClientInfo {
     static var cpuUsage: Double? {
         if let cpuUsageString = CLI.runCommand(args: "bash", "Scripts/\(osType)CPUUsage.bash").output.first,
             let cpuUsage = Double(cpuUsageString) {
+            #if os(Linux)
+            guard cpuUsage > 0 else { return nil }
             return cpuUsage
+            #else
+            var cpuUsage = cpuUsage
+            cpuUsage = 100 - cpuUsage
+            guard cpuUsage > 0 else { return nil }
+            return cpuUsage
+            #endif
         }
         return nil
     }

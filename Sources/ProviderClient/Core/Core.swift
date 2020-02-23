@@ -3,12 +3,12 @@ import Foundation
 class Core {
     
     var clientController: ClientController!
-    var stateController: StateController!
+    var statsController: StatsController!
     var webSocketController: WebSocketController?
     
     func setup() {
         clientController = ClientController(core: self)
-        stateController = StateController(core: self)
+        statsController = StatsController(core: self)
     }
     
     func connect(_ completion: @escaping () -> Void) {
