@@ -4,7 +4,7 @@ import SPMUtility
 public final class CLITool {
     
     func run() {
-        let parser = ArgumentParser(commandName: "proc", usage: "proc -h=hostname -hp=httpport -wp=wsport", overview: "Provider Client")
+        let parser = ArgumentParser(commandName: "proc", usage: "proc -h hostname -hp httpport -wp wsport", overview: "Provider Client")
         let hostArgument = parser.add(option: "--host", shortName: "-h", kind: String.self, usage: "Use custom host name")
         let httpPortArgument = parser.add(option: "--httpport", shortName: "-hp", kind: Int.self, usage: "Use custom HTTP port")
         let wsPortArgument = parser.add(option: "--wsport", shortName: "-wp", kind: Int.self, usage: "Use custom WebSockets port")

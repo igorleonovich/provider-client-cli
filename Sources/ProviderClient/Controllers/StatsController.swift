@@ -14,12 +14,10 @@ class StatsController {
         DispatchQueue.main.async {
             Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] timer in
                 
-                guard let `self` = self, let core = self.core else { return }
+                updateStats()
                 
-                core.clientController.currentLocalClient?.cpuUsage = ClientInfo.cpuUsage
-                core.clientController.currentLocalClient?.freeRAM = ClientInfo.freeRAM
-                
-                guard let currentLocalClient = core.clientController.currentLocalClient else { return }
+                guard let `self` = self, let core = self.core,
+                    let currentLocalClient = core.clientController.currentLocalClient else { return }
                 
                 // Check updates
                 
@@ -55,5 +53,12 @@ class StatsController {
                 }
             }
         }
+    }
+    
+    private func updateStats() {
+        guard let `self` = self, let core = self.core else { return }
+        core.clientController.currentLocalClient?.cpuUsage = ClientInfo.cpuUsage
+        core.clientController.currentLocalClient?.freeRAM = ClientInfo.freeRAM
+        core.clientController.currentLocalClient?.state = ClientState.available.rawValue
     }
 }
