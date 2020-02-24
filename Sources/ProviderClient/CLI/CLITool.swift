@@ -8,16 +8,11 @@ public final class CLITool {
         let hostArgument = parser.add(option: "--host", shortName: "-h", kind: String.self, usage: "Use custom host name")
         let httpPortArgument = parser.add(option: "--httpport", shortName: "-hp", kind: Int.self, usage: "Use custom HTTP port")
         let wsPortArgument = parser.add(option: "--wsport", shortName: "-wp", kind: Int.self, usage: "Use custom WebSockets port")
-        let resetOption = parser.add(option: "--reset", kind: Bool.self)
         let versionOption = parser.add(option: "--version", kind: Bool.self)
         let verboseOption = parser.add(option: "--verbose", kind: Bool.self, usage: "Show more debugging information")
 
         do {
             let result = try parser.parse(Array(CommandLine.arguments.dropFirst()))
-            
-            if result.get(resetOption) != nil {
-                Environment.clientID = nil
-            }
             
             if result.get(versionOption) != nil {
                 print("ProviderClient 0.1.0")

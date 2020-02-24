@@ -12,7 +12,7 @@ class WebSocketController {
         self.clientID = clientID
     }
     
-    func start(_ completion: @escaping () -> Void) {
+    func start(_ completion: @escaping (Error?) -> Void) {
         
         do {
             print("\(Date()) [ws] connecting")
@@ -26,7 +26,14 @@ class WebSocketController {
             }.wait()
             
             webSocket.onText { webSocket, text in
-                print("\(Date()) [ws] [text from server] \(text)")
+//                print("\(Date()) [ws] [text from server] \(text)")
+                if text == "clientID OK" {
+                print("\(Date()) [ws] [clientID OK]")
+                    completion(nil)
+                } else if text == "clientID FAIL" {
+                    print("\(Date()) [ws] [clientID FAIL]")
+                    completion(Error.clientIDNotFoundOnServer)
+                }
             }
             
             webSocket.onBinary { webSocket, data in
@@ -37,10 +44,14 @@ class WebSocketController {
                print("\(Date()) [ws] [closed]")
             }
             
-            completion()
-            
         } catch {
             print(error)
         }
+    }
+}
+
+extension WebSocketController {
+    enum Error: Swift.Error {
+        case clientIDNotFoundOnServer
     }
 }

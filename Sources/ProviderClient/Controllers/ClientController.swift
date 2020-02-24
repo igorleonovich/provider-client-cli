@@ -22,14 +22,14 @@ class ClientController {
     }
     
     func createClient(_ completion: @escaping (Error?) -> Void) {
-        print("[setup] obtaining new client")
+        print("\(Date()) [setup] obtaining new client")
         let localClient = getFullFreshClient()
-        print("[setup] sending new client to server")
+        print("\(Date()) [setup] sending new client to server")
         create(with: localClient) { createdClient, error in
             if let createdClient = createdClient {
                 Environment.clientID = createdClient.id
                 completion(nil)
-                print("[setup] new client created")
+                print("\(Date()) [setup] new client created")
             } else {
                 completion(error)
             }

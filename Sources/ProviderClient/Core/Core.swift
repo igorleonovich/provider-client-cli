@@ -16,14 +16,20 @@ class Core {
         if let clientID = Environment.clientID {
             print("\(Date()) [setup] clientID detected \(clientID)")
             webSocketController = WebSocketController(core: self, clientID: clientID)
-            webSocketController!.start {
-                completion(nil)
+            webSocketController!.start { error in
+                if error == nil {
+                    completion(nil)
+                } else {
+                    print("\(Date()) [setup] clearing clientID")
+                    Environment.clientID = nil
+                    self.connect(completion)
+                }
             }
         } else {
             print("\(Date()) [setup] clientID not detected]")
             clientController.createClient { error in
                 if error == nil {
-                    print("[setup] try to connect ws again")
+                    print("\(Date()) [setup] try to connect ws again")
                     self.connect(completion)
                 } else {
                     completion(error)
