@@ -19,7 +19,7 @@ class Core {
             webSocketController!.start { error in
                 if error == nil {
                     completion(nil)
-                } else {
+                } else if error == WebSocketController.Error.clientIDNotFoundOnServer {
                     print("\(Date()) [setup] clearing clientID")
                     Environment.clientID = nil
                     self.connect(completion)
