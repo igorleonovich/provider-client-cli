@@ -21,15 +21,17 @@ class ClientController {
         self.core = core
     }
     
-    func createClient(_ completion: @escaping () -> Void) {
-        
+    func createClient(_ completion: @escaping (Error?) -> Void) {
+        print("[setup] obtaining new client")
         let localClient = getFullFreshClient()
+        print("[setup] sending new client to server")
         create(with: localClient) { createdClient, error in
             if let createdClient = createdClient {
                 Environment.clientID = createdClient.id
-                completion()
-            } else if let error = error {
-                print(error)
+                completion(nil)
+                print("[setup] new client created")
+            } else {
+                completion(error)
             }
         }
     }
@@ -71,6 +73,7 @@ class ClientController {
             let clientToServerAction = ClientToServerAction(type: ClientToServerActionType.fullClientUpdate.rawValue,
                                                           data: localClientData)
             let clientToServerActionData = try JSONEncoder().encode(clientToServerAction)
+            print("\(Date()) [fullClientUpdate] \(localClient)")
             completion(clientToServerActionData)
         } catch {
             print(error)

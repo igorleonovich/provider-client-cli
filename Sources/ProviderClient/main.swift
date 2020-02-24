@@ -5,9 +5,13 @@ cliTool.run()
 
 let core = Core()
 core.setup()
-core.connect {
-    core.fullClientUpdate {
-        core.statsController.startStatsUpdating()
+core.connect { error in
+    if let error = error {
+        print(error)
+    } else {
+        core.fullClientUpdate {
+            core.statsController.startStatsUpdating()
+        }
     }
 }
 

@@ -7,26 +7,28 @@ class Core {
     var webSocketController: WebSocketController?
     
     func setup() {
+        print("\(Date()) [setup] started")
         clientController = ClientController(core: self)
         statsController = StatsController(core: self)
     }
     
-    func connect(_ completion: @escaping () -> Void) {
+    func connect(_ completion: @escaping (Error?) -> Void) {
         if let clientID = Environment.clientID {
+            print("\(Date()) [setup] clientID detected \(clientID)")
             webSocketController = WebSocketController(core: self, clientID: clientID)
             webSocketController!.start {
-                completion()
+                completion(nil)
             }
         } else {
-            createClient {
-               self.connect(completion)
+            print("\(Date()) [setup] clientID not detected]")
+            clientController.createClient { error in
+                if error == nil {
+                    print("[setup] try to connect ws again")
+                    self.connect(completion)
+                } else {
+                    completion(error)
+                }
             }
-        }
-    }
-    
-    func createClient(_ completion: @escaping () -> Void) {
-        core.clientController.createClient {
-            completion()
         }
     }
     

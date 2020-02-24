@@ -12,6 +12,8 @@ class StatsController {
     func startStatsUpdating() {
         
         DispatchQueue.main.async {
+            
+            print("\(Date()) [statsUpdate] each 1 sec: obtain & send to server")
             Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] timer in
                 
                 guard let `self` = self else { return }
@@ -29,14 +31,17 @@ class StatsController {
                 
                 if currentLocalClient.state != previousLocalClient.state {
                     newLocalClient.state = currentLocalClient.state
+                    print("\(Date()) [statsUpdate] [state] \(String(describing: newLocalClient.state?.description))")
                     shouldUpdate = true
                 }
                 if currentLocalClient.cpuUsage != previousLocalClient.cpuUsage {
                     newLocalClient.cpuUsage = currentLocalClient.cpuUsage
+                    print("\(Date()) [statsUpdate] [cpuUsage] \(String(describing: newLocalClient.cpuUsage))")
                     shouldUpdate = true
                 }
                 if currentLocalClient.freeRAM != previousLocalClient.freeRAM {
                     newLocalClient.freeRAM = currentLocalClient.freeRAM
+                    print("\(Date()) [statsUpdate] [freeRAM] \(String(describing: newLocalClient.freeRAM))")
                     shouldUpdate = true
                 }
                 
@@ -49,6 +54,7 @@ class StatsController {
                         let updatedClientData = try JSONEncoder().encode(newLocalClient)
                         let clientToServerAction = ClientToServerAction(type: ClientToServerActionType.partialClientUpdate.rawValue, data: updatedClientData)
                         let clientToServerActionData = try JSONEncoder().encode(clientToServerAction)
+                        print("\(Date()) [statsUpdate] sending to server")
                         core.webSocketController?.webSocket.send(clientToServerActionData)
                     } catch {
                         print(error)

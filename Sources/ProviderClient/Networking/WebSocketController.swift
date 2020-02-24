@@ -15,20 +15,27 @@ class WebSocketController {
     func start(_ completion: @escaping () -> Void) {
         
         do {
+            print("\(Date()) [ws] connecting")
             webSocket = try HTTPClient.webSocket(hostname: Constants.host,
                                                  port: Constants.wsPort,
                 path: "/connect/\(clientID)",
-                on: MultiThreadedEventLoopGroup.init(numberOfThreads: 1)).wait()
+                on: MultiThreadedEventLoopGroup.init(numberOfThreads: 1)).do { webSocket in
+                    print("\(Date()) [ws] connected")
+            }.catch { error in
+                print(error)
+            }.wait()
             
             webSocket.onText { webSocket, text in
-                print(text)
+                print("\(Date()) [ws] [text from server] \(text)")
             }
             
             webSocket.onBinary { webSocket, data in
-                print(data)
+                print("\(Date()) [ws] [data from server] \(data)")
             }
             
-//            try self.webSocket.onClose.wait()
+            _ = self.webSocket.onClose.map {
+               print("\(Date()) [ws] [closed]")
+            }
             
             completion()
             
