@@ -13,7 +13,7 @@ class StatsController {
         
         DispatchQueue.main.async {
             
-            print("\(Date()) [statsUpdate] each 1 sec: obtain & send to server")
+            print("\(Date()) [statsUpdate] obtain updated client & send it to server each 1 sec")
             Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] timer in
                 
                 guard let `self` = self else { return }
