@@ -1,6 +1,6 @@
 import Foundation
 
-class Core {
+final class Core {
     
     var clientController: ClientController!
     var statsController: StatsController!

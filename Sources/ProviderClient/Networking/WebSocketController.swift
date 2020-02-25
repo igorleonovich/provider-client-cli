@@ -1,7 +1,7 @@
 import Foundation
 import WebSocket
 
-class WebSocketController {
+final class WebSocketController {
     
     weak var core: Core?
     var clientID: String
@@ -18,7 +18,7 @@ class WebSocketController {
             print("\(Date()) [ws] connecting")
             webSocket = try HTTPClient.webSocket(hostname: Constants.host,
                                                  port: Constants.wsPort,
-                path: "/connect/\(clientID)",
+                path: "/connectClient/\(clientID)",
                 on: MultiThreadedEventLoopGroup.init(numberOfThreads: 1)).do { webSocket in
                     print("\(Date()) [ws] connected")
             }.catch { error in

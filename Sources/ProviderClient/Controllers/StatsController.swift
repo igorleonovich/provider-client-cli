@@ -1,7 +1,7 @@
 import Foundation
 import ProviderSDK
 
-class StatsController {
+final class StatsController {
     
     weak var core: Core?
     

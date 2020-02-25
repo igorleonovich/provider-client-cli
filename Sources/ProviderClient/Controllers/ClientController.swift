@@ -4,7 +4,7 @@ import FoundationNetworking
 #endif
 import ProviderSDK
 
-class ClientController {
+final class ClientController {
     
     weak var core: Core?
     
