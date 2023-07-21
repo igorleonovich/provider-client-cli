@@ -1,3 +1,3 @@
 # ProviderClient
 
-A description of this package.
+Host provider client CLI (concept)
