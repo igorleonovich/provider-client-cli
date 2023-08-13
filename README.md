@@ -1,3 +1,3 @@
 # Provider Client (CLI) (Concept)
 
-Host Provider Client CLI
+Host Provider Client
